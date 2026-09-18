@@ -1,0 +1,4 @@
+---
+- name: Verify node-exporter prerequisites
+  ansible.builtin.debug:
+    msg: "Node Exporter will be executed via Docker Compose with host PID and filesystem access on internal network"

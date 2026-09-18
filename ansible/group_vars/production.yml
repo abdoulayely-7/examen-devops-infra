@@ -1,0 +1,13 @@
+---
+ansible_user: ubuntu
+app_dir: /opt/myapp
+docker_users:
+  - ubuntu
+
+docker_networks:
+  - name: traefik-public
+    driver: bridge
+  - name: internal
+    driver: bridge
+
+swap_size_gb: 4

@@ -1,0 +1,14 @@
+---
+- name: Production Server Configuration & Deployment
+  hosts: production # Groupe d'hôtes cibles
+  become: yes # Exécute les commandes en tant que root
+  roles: # Ensemble de tâches à exécuter
+    - common
+    - docker
+    - traefik
+    - prometheus
+    - node-exporter
+    - cadvisor
+    - grafana
+    - sonarqube
+    - app 

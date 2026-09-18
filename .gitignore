@@ -1,0 +1,31 @@
+﻿# Environment & secrets
+.env
+*.env
+.env.*
+!.env.example
+.neon
+
+# SSH keys & certificates
+*.pem
+*.key
+*.id_rsa
+*.id_ed25519
+acme.json
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+*.auto.tfvars
+
+# Ansible
+*.retry
+ansible_vault_pass.txt
+
+# OS & IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

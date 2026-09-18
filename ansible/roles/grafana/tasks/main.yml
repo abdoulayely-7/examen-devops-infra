@@ -1,0 +1,42 @@
+---
+- name: Create Grafana directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: ubuntu
+    group: ubuntu
+    mode: '0755'
+  loop:
+    - "{{ app_dir }}/grafana"
+    - "{{ app_dir }}/grafana/provisioning"
+    - "{{ app_dir }}/grafana/provisioning/datasources"
+    - "{{ app_dir }}/grafana/provisioning/dashboards"
+    - "{{ app_dir }}/grafana/dashboards"
+
+- name: Deploy Grafana datasource provisioning
+  ansible.builtin.copy:
+    src: provisioning/datasources/prometheus.yml
+    dest: "{{ app_dir }}/grafana/provisioning/datasources/prometheus.yml"
+    owner: ubuntu
+    group: ubuntu
+    mode: '0644'
+
+- name: Deploy Grafana dashboard provider
+  ansible.builtin.copy:
+    src: provisioning/dashboards/default.yml
+    dest: "{{ app_dir }}/grafana/provisioning/dashboards/default.yml"
+    owner: ubuntu
+    group: ubuntu
+    mode: '0644'
+
+- name: Deploy Grafana dashboards
+  ansible.builtin.copy:
+    src: "dashboards/{{ item }}"
+    dest: "{{ app_dir }}/grafana/dashboards/{{ item }}"
+    owner: ubuntu
+    group: ubuntu
+    mode: '0644'
+  loop:
+    - ec2-server-monitoring.json
+    - docker-monitoring.json
+    - application-monitoring.json
