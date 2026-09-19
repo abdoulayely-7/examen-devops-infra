@@ -24,11 +24,13 @@
 - name: Télécharger et démarrer les services d'infrastructure (Traefik, Prometheus, Grafana, Node Exporter, cAdvisor, SonarQube)
   community.docker.docker_compose_v2:
     project_src: "{{ app_dir }}" # Indique où se trouve le fichier docker-compose.yml
-    services: # Liste des conteneurs à allumer MAINTENANT (remarque : 'app' n'est pas dans la liste !)
+    services: # Tous les conteneurs de l'infrastructure, du backend et du frontend
       - traefik
       - prometheus
       - grafana
       - node-exporter
       - cadvisor
       - sonarqube
+      - application
+      - front
     state: present # Demande à Docker Compose de télécharger les images et de lancer ces conteneurs
