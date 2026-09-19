@@ -1,91 +1,91 @@
 ---
-- name: Update apt cache
+- name: Mettre à jour le cache apt
   ansible.builtin.apt:
-    update_cache: yes
-    cache_valid_time: 3600
+    update_cache: yes # Demande à Ubuntu de rafraîchir la liste de ses paquets
+    cache_valid_time: 3600 # Ne rafraîchit pas si on l'a déjà fait dans la dernière heure (3600s)
 
-- name: Install essential system packages
+- name: Installer les paquets système essentiels
   ansible.builtin.apt:
     name:
-      - ca-certificates
-      - curl
-      - gnupg
-      - git
-      - htop
-      - ufw
-      - python3-pip
-      - python3-docker
-      - net-tools
-    state: present
+      - ca-certificates # Certificats de sécurité pour les connexions HTTPS
+      - curl # Outil pour télécharger des fichiers en ligne de commande
+      - gnupg # Outil de cryptographie (souvent utilisé pour vérifier les signatures de paquets)
+      - git # Outil de gestion de versions
+      - htop # Moniteur système interactif (plus beau que 'top')
+      - ufw # Pare-feu interne de Linux (Uncomplicated Firewall)
+      - python3-pip # Gestionnaire de paquets pour Python
+      - python3-docker # Librairie Python nécessaire pour qu'Ansible contrôle Docker
+      - net-tools # Outils réseaux (comme ifconfig ou netstat)
+    state: present # Indique qu'on veut s'assurer que ces paquets sont installés
 
-- name: Configure sysctl vm.max_map_count for SonarQube and Elasticsearch
+- name: Configurer sysctl vm.max_map_count pour SonarQube et Elasticsearch
   ansible.posix.sysctl:
     name: vm.max_map_count
-    value: "262144"
+    value: "262144" # Augmente la limite des zones mémoires, indispensable pour Elasticsearch (sinon SonarQube crashe)
     state: present
-    reload: yes
+    reload: yes # Recharge la configuration immédiatement sans redémarrer le serveur
 
-- name: Configure sysctl fs.file-max
+- name: Configurer sysctl fs.file-max # nombre maximum de descripteurs de fichiers que le noyau peut allouer
   ansible.posix.sysctl:
     name: fs.file-max
-    value: "65536"
+    value: "65536" # Augmente le nombre maximum de fichiers qu'un processus peut ouvrir simultanément
     state: present
     reload: yes
 
-- name: Configure security limits for SonarQube
+- name: Configurer les limites de sécurité pour SonarQube
   ansible.builtin.copy:
-    dest: /etc/security/limits.d/99-sonarqube.conf
+    dest: /etc/security/limits.d/99-sonarqube.conf # Crée un fichier de configuration pour les limites utilisateurs
     content: |
       * soft nofile 65536
       * hard nofile 65536
       * soft nproc 4096
       * hard nproc 4096
-    mode: '0644'
+    mode: '0644' # Définit les droits du fichier (lecture/écriture pour root, lecture pour les autres)
 
-- name: Check if swapfile exists
-  ansible.builtin.stat:
-    path: /swapfile
-  register: swapfile_stat
+# - name: Vérifier si le fichier swap existe
+#   ansible.builtin.stat:
+#     path: /swapfile # Chemin où on veut mettre la fausse RAM
+#   register: swapfile_stat # Sauvegarde le résultat de cette vérification dans une variable nommée 'swapfile_stat'
 
-- name: Create swap file if not present
-  ansible.builtin.command: fallocate -l {{ swap_size_gb }}G /swapfile
-  when: not swapfile_stat.stat.exists
+# - name: Créer le fichier swap s'il n'est pas présent
+#   ansible.builtin.command: fallocate -l {{ swap_size_gb }}G /swapfile # Crée un gros fichier vide de la taille demandée (ex: 4Go)
+#   when: not swapfile_stat.stat.exists # Exécute cette ligne UNIQUEMENT si le fichier n'existait pas avant
 
-- name: Set permissions on swapfile
+# - name: Définir les permissions sur le fichier swap
+#   ansible.builtin.file:
+#     path: /swapfile
+#     owner: root
+#     group: root
+#     mode: '0600' # TRÈS IMPORTANT: seul root a le droit de lire ce fichier, sinon c'est une énorme faille de sécurité
+#   when: not swapfile_stat.stat.exists
+
+# - name: Formater le fichier swap
+#   ansible.builtin.command: mkswap /swapfile # Prépare ce fichier vide pour qu'il fonctionne comme de la RAM (formatage spécial)
+#   when: not swapfile_stat.stat.exists
+
+# - name: Activer le swap
+#   ansible.builtin.command: swapon /swapfile # Dit à Linux de commencer à utiliser ce fichier comme mémoire d'appoint
+#   when: not swapfile_stat.stat.exists
+
+# - name: Ajouter le fichier swap à /etc/fstab
+#   ansible.posix.mount:
+#     name: none
+#     src: /swapfile
+#     fstype: swap
+#     opts: sw
+#     state: present # S'assure que le swap se relancera tout seul si on redémarre l'EC2
+
+# - name: Configurer vm.swappiness
+#   ansible.posix.sysctl:
+#     name: vm.swappiness
+#     value: "10" # Dit à Linux de ne pas utiliser le swap trop vite (10%). Il attendra que la vraie RAM soit remplie à 90% avant d'utiliser le disque.
+#     state: present
+#     reload: yes
+
+- name: Créer le répertoire de base de l'application /opt/myapp
   ansible.builtin.file:
-    path: /swapfile
-    owner: root
-    group: root
-    mode: '0600'
-  when: not swapfile_stat.stat.exists
-
-- name: Format swapfile
-  ansible.builtin.command: mkswap /swapfile
-  when: not swapfile_stat.stat.exists
-
-- name: Enable swap
-  ansible.builtin.command: swapon /swapfile
-  when: not swapfile_stat.stat.exists
-
-- name: Add swapfile to /etc/fstab
-  ansible.posix.mount:
-    name: none
-    src: /swapfile
-    fstype: swap
-    opts: sw
-    state: present
-
-- name: Configure vm.swappiness
-  ansible.posix.sysctl:
-    name: vm.swappiness
-    value: "10"
-    state: present
-    reload: yes
-
-- name: Create base application directory /opt/myapp
-  ansible.builtin.file:
-    path: "{{ app_dir }}"
-    state: directory
-    owner: ubuntu
+    path: "{{ app_dir }}" # /opt/myapp (définie dans les group_vars)
+    state: directory # S'assure que c'est un dossier et pas un fichier
+    owner: ubuntu # Le propriétaire du dossier sera notre utilisateur 'ubuntu'
     group: ubuntu
-    mode: '0755'
+    mode: '0755' # Propriétaire: lire/écrire/exécuter. Autres: lire/exécuter.

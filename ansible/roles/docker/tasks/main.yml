@@ -1,49 +1,49 @@
 ---
-- name: Create keyrings directory
+- name: Créer le répertoire keyrings
   ansible.builtin.file:
     path: /etc/apt/keyrings
-    state: directory
-    mode: '0755'
+    state: directory # Crée le dossier s'il n'existe pas
+    mode: '0755' # Droits d'accès standard pour un dossier système
 
-- name: Download Docker official GPG key
+- name: Télécharger la clé GPG officielle de Docker
   ansible.builtin.get_url:
     url: https://download.docker.com/linux/ubuntu/gpg
-    dest: /etc/apt/keyrings/docker.asc
-    mode: '0644'
+    dest: /etc/apt/keyrings/docker.asc # Sauvegarde la clé de sécurité de Docker
+    mode: '0644' # Indispensable pour s'assurer qu'on installe le vrai Docker et non un virus
 
-- name: Add Docker official repository
+- name: Ajouter le dépôt officiel de Docker
   ansible.builtin.apt_repository:
     repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
     state: present
-    filename: docker
+    filename: docker # Ajoute la "boutique d'applications" officielle de Docker à Ubuntu
 
-- name: Install Docker CE, CLI, containerd, and Compose plugin
+- name: Installer Docker CE, CLI, containerd et le plugin Compose
   ansible.builtin.apt:
     name:
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
-      - docker-buildx-plugin
-      - docker-compose-plugin
+      - docker-ce # Engine Docker (le moteur qui exécute les conteneurs)
+      - docker-ce-cli # Outil en ligne de commande pour contrôler Docker
+      - containerd.io # Moteur de conteneurisation léger, utilisé par Docker
+      - docker-buildx-plugin # Outil pour construire des images Docker plus efficacement
+      - docker-compose-plugin # Outil pour orchestrer des applications multi-conteneurs
     state: present
-    update_cache: yes
+    update_cache: yes # Met à jour la liste des paquets avant d'installer
 
-- name: Ensure Docker service is enabled and running
+- name: S'assurer que le service Docker est activé et en cours d'exécution
   ansible.builtin.service:
     name: docker
-    state: started
-    enabled: yes
+    state: started # Lance Docker immédiatement
+    enabled: yes # Fait en sorte que Docker se lance tout seul au démarrage du serveur
 
-- name: Add users to docker group
+- name: Ajouter les utilisateurs au groupe docker
   ansible.builtin.user:
-    name: "{{ item }}"
-    groups: docker
+    name: "{{ item }}" # Fait une boucle sur la variable 'docker_users' (définie dans group_vars, ex: l'utilisateur 'ubuntu')
+    groups: docker # Permet à ces utilisateurs d'utiliser Docker sans taper 'sudo' à chaque fois
     append: yes
   loop: "{{ docker_users }}"
 
-- name: Create Docker networks
+- name: Créer les réseaux Docker
   community.docker.docker_network:
-    name: "{{ item.name }}"
-    driver: "{{ item.driver }}"
+    name: "{{ item.name }}" # Crée les réseaux (ex: traefik-public) définis dans 'docker_networks' (group_vars)
+    driver: "{{ item.driver }}" # Le type de réseau (ex: overlay ou bridge)
     state: present
-  loop: "{{ docker_networks }}"
+  loop: "{{ docker_networks }}" # Boucle pour créer tous les réseaux nécessaires pour isoler nos conteneurs

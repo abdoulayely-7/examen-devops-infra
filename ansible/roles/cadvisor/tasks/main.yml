@@ -1,4 +1,4 @@
 ---
-- name: Verify cAdvisor prerequisites
+- name: Vérifier les prérequis de cAdvisor
   ansible.builtin.debug:
     msg: "cAdvisor will be executed via Docker Compose with Docker daemon and cgroup access on internal network"

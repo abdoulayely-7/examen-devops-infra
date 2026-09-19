@@ -1,42 +1,42 @@
 ---
-- name: Create Grafana directories
+- name: Créer les répertoires Grafana
   ansible.builtin.file:
-    path: "{{ item }}"
+    path: "{{ item }}" 
     state: directory
     owner: ubuntu
     group: ubuntu
     mode: '0755'
-  loop:
+  loop: # Crée toute l'arborescence de dossiers nécessaire pour configurer Grafana automatiquement
     - "{{ app_dir }}/grafana"
     - "{{ app_dir }}/grafana/provisioning"
     - "{{ app_dir }}/grafana/provisioning/datasources"
     - "{{ app_dir }}/grafana/provisioning/dashboards"
     - "{{ app_dir }}/grafana/dashboards"
 
-- name: Deploy Grafana datasource provisioning
+- name: Déployer le provisionnement de la source de données Grafana
   ansible.builtin.copy:
     src: provisioning/datasources/prometheus.yml
-    dest: "{{ app_dir }}/grafana/provisioning/datasources/prometheus.yml"
+    dest: "{{ app_dir }}/grafana/provisioning/datasources/prometheus.yml" # Fichier qui dit à Grafana: "Ta source de données s'appelle Prometheus et voici son adresse"
     owner: ubuntu
     group: ubuntu
     mode: '0644'
 
-- name: Deploy Grafana dashboard provider
+- name: Déployer le fournisseur de tableaux de bord Grafana
   ansible.builtin.copy:
     src: provisioning/dashboards/default.yml
-    dest: "{{ app_dir }}/grafana/provisioning/dashboards/default.yml"
+    dest: "{{ app_dir }}/grafana/provisioning/dashboards/default.yml" # Fichier qui dit à Grafana: "Va chercher les tableaux de bord dans le dossier /dashboards"
     owner: ubuntu
     group: ubuntu
     mode: '0644'
 
-- name: Deploy Grafana dashboards
+- name: Déployer les tableaux de bord Grafana
   ansible.builtin.copy:
     src: "dashboards/{{ item }}"
-    dest: "{{ app_dir }}/grafana/dashboards/{{ item }}"
+    dest: "{{ app_dir }}/grafana/dashboards/{{ item }}" # Copie les 3 tableaux de bord (fichiers JSON) sur le serveur
     owner: ubuntu
     group: ubuntu
     mode: '0644'
-  loop:
-    - ec2-server-monitoring.json
-    - docker-monitoring.json
-    - application-monitoring.json
+  loop: 
+    - ec2-server-monitoring.json # Le tableau de bord pour l'état du serveur EC2 (CPU, RAM...)
+    - docker-monitoring.json # Le tableau de bord pour voir ce que consomment les conteneurs Docker
+    - application-monitoring.json # Le tableau de bord spécifique à ton application Spring Boot

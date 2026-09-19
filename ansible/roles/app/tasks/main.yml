@@ -1,18 +1,18 @@
 ---
-- name: Copy docker-compose.yml to /opt/myapp
+- name: Copier docker-compose.yml vers /opt/myapp
   ansible.builtin.copy:
-    src: docker-compose.yml
-    dest: "{{ app_dir }}/docker-compose.yml"
+    src: docker-compose.yml # Prend le fichier principal docker-compose (qui définit tous les conteneurs)
+    dest: "{{ app_dir }}/docker-compose.yml" # L'envoie sur le serveur
     owner: ubuntu
     group: ubuntu
     mode: '0644'
 
-- name: Deploy .env file with Neon PostgreSQL credentials
+- name: Déployer le fichier .env avec les identifiants Neon PostgreSQL
   ansible.builtin.copy:
-    dest: "{{ app_dir }}/.env"
+    dest: "{{ app_dir }}/.env" # Crée le fichier de variables d'environnement caché (.env) sur le serveur
     owner: ubuntu
     group: ubuntu
-    mode: '0600'
+    mode: '0600' # Protégé : seul l'utilisateur ubuntu peut lire ces mots de passe !
     content: |
       DOCKERHUB_USERNAME=abdoulayely777
       APP_TAG=latest
@@ -21,14 +21,14 @@
       SPRING_DATASOURCE_PASSWORD=npg_4HBwLetzRDh5
       GRAFANA_ADMIN_PASSWORD=AdminDevOps2026!
 
-- name: Pull and start infrastructure services (Traefik, Prometheus, Grafana, Node Exporter, cAdvisor, SonarQube)
+- name: Télécharger et démarrer les services d'infrastructure (Traefik, Prometheus, Grafana, Node Exporter, cAdvisor, SonarQube)
   community.docker.docker_compose_v2:
-    project_src: "{{ app_dir }}"
-    services:
+    project_src: "{{ app_dir }}" # Indique où se trouve le fichier docker-compose.yml
+    services: # Liste des conteneurs à allumer MAINTENANT (remarque : 'app' n'est pas dans la liste !)
       - traefik
       - prometheus
       - grafana
       - node-exporter
       - cadvisor
       - sonarqube
-    state: present
+    state: present # Demande à Docker Compose de télécharger les images et de lancer ces conteneurs

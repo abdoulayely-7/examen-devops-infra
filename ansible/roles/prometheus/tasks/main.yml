@@ -1,16 +1,16 @@
 ---
-- name: Create Prometheus configuration directory
+- name: Créer le répertoire de configuration de Prometheus
   ansible.builtin.file:
-    path: "{{ app_dir }}/prometheus"
+    path: "{{ app_dir }}/prometheus" # /opt/myapp/prometheus
     state: directory
     owner: ubuntu
     group: ubuntu
     mode: '0755'
 
-- name: Deploy prometheus.yml
+- name: Déployer prometheus.yml
   ansible.builtin.copy:
-    src: prometheus.yml
-    dest: "{{ app_dir }}/prometheus/prometheus.yml"
+    src: prometheus.yml # Prend le fichier de configuration de ton ordi (dossier 'files' du rôle Prometheus)
+    dest: "{{ app_dir }}/prometheus/prometheus.yml" # L'envoie sur le serveur dans le bon dossier
     owner: ubuntu
     group: ubuntu
     mode: '0644'

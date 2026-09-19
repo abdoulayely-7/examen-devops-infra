@@ -1,5 +1,5 @@
 ---
-- name: Production Server Configuration & Deployment
+- name: Configuration et Déploiement du Serveur de Production
   hosts: production # Groupe d'hôtes cibles
   become: yes # Exécute les commandes en tant que root
   roles: # Ensemble de tâches à exécuter

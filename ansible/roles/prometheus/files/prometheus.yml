@@ -1,22 +1,22 @@
 global:
-  scrape_interval: 15s
-  evaluation_interval: 15s
+  scrape_interval: 15s # Prometheus ira chercher des nouvelles données toutes les 15 secondes
+  evaluation_interval: 15s # Il vérifiera s'il doit déclencher des alertes toutes les 15 secondes
 
 scrape_configs:
   - job_name: 'prometheus'
     static_configs:
-      - targets: ['localhost:9090']
+      - targets: ['localhost:9090'] # Prometheus se surveille lui-même
 
   - job_name: 'node-exporter'
     static_configs:
-      - targets: ['node-exporter:9100']
+      - targets: ['node-exporter:9100'] # Surveille la santé du serveur EC2 (CPU, RAM, Disque) via le conteneur node-exporter
 
   - job_name: 'cadvisor'
     static_configs:
-      - targets: ['cadvisor:8080']
+      - targets: ['cadvisor:8080'] # Surveille la santé de Docker (les ressources consommées par chaque conteneur)
 
   - job_name: 'application'
-    metrics_path: '/actuator/prometheus'
-    scrape_interval: 10s
+    metrics_path: '/actuator/prometheus' # Le chemin spécifique où ton application Spring Boot expose ses métriques
+    scrape_interval: 10s # Pour ton app, on va chercher les données plus souvent (toutes les 10 secondes)
     static_configs:
-      - targets: ['examen-devops-back:8080']
+      - targets: ['examen-devops-back:8080'] # Le nom du conteneur de ton application back-end et son port

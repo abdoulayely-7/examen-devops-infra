@@ -1,14 +1,14 @@
 ---
-- name: Ensure SonarQube kernel parameters are loaded
+- name: S'assurer que les paramètres noyau de SonarQube sont chargés
   ansible.posix.sysctl:
     name: vm.max_map_count
-    value: "262144"
+    value: "262144" # On s'assure une deuxième fois (comme dans common) que cette limite est bien modifiée pour Elasticsearch
     state: present
     reload: yes
 
-- name: Ensure SonarQube file limit is loaded
+- name: S'assurer que la limite de fichiers de SonarQube est chargée
   ansible.posix.sysctl:
     name: fs.file-max
-    value: "65536"
+    value: "65536" # On s'assure une deuxième fois que le nombre de fichiers ouverts est suffisant
     state: present
     reload: yes

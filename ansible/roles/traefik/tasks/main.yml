@@ -1,18 +1,18 @@
 ---
-- name: Create Traefik directory
+- name: Créer le répertoire Traefik
   ansible.builtin.file:
-    path: "{{ app_dir }}/traefik"
+    path: "{{ app_dir }}/traefik" # /opt/myapp/traefik
     state: directory
     owner: ubuntu
     group: ubuntu
     mode: '0755'
 
-- name: Ensure acme.json exists with strict permissions (0600)
+- name: S'assurer que acme.json existe avec des permissions strictes (0600)
   ansible.builtin.file:
-    path: "{{ app_dir }}/traefik/acme.json"
-    state: touch
+    path: "{{ app_dir }}/traefik/acme.json" # Fichier qui va stocker les certificats HTTPS (Let's Encrypt)
+    state: touch # Crée le fichier vide s'il n'existe pas
     owner: ubuntu
     group: ubuntu
-    mode: '0600'
-    modification_time: preserve
+    mode: '0600' # TRÈS IMPORTANT: Let's Encrypt refusera de démarrer si ce fichier n'est pas protégé en 0600 (seul le propriétaire peut le lire)
+    modification_time: preserve # Ne change pas la date de modification si le fichier existe déjà
     access_time: preserve

@@ -5,9 +5,10 @@ docker_users:
   - ubuntu
 
 docker_networks:
-  - name: traefik-public
-    driver: bridge
-  - name: internal
+  - name: traefik-public # Réseau externe pour les conteneurs qui ont besoin d'être accessibles depuis l'extérieur comme traefik
+    driver: bridge # Type de réseau, bridge est le plus courant,qui permet la communication entre les conteneurs et avec l'extérieur
+  - name: internal # Réseau interne pour les conteneurs qui n'ont pas besoin d'être accessibles depuis l'extérieur comme la bd
     driver: bridge
 
-swap_size_gb: 4
+swap_size_gb: 4 # fausse mémoire vive stockée sur le disque dur du server ec2
+

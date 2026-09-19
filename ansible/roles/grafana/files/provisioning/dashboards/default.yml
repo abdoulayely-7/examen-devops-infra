@@ -2,10 +2,10 @@ apiVersion: 1
 
 providers:
   - name: 'Default'
-    orgId: 1
-    folder: ''
-    type: file
-    disableDeletion: false
-    editable: true
+    orgId: 1 
+    folder: '' # Le dossier dans lequel les tableaux de bord seront rangés (laisser vide pour le dossier racine)
+    type: file # Type de fournisseur (ici, des fichiers statiques)
+    disableDeletion: false # Permet de supprimer manuellement les tableaux de bord si on le souhaite
+    editable: true # Permet de modifier les tableaux de bord directement depuis l'interface web de Grafana
     options:
-      path: /var/lib/grafana/dashboards
+      path: /var/lib/grafana/dashboards # L'endroit où Grafana ira chercher les fichiers .json sur le serveur
