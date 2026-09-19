@@ -31,6 +31,6 @@
       - node-exporter
       - cadvisor
       - sonarqube
-      - application
+      - application # 
       - front
     state: present # Demande à Docker Compose de télécharger les images et de lancer ces conteneurs
