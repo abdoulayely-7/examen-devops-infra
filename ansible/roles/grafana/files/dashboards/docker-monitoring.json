@@ -12,7 +12,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -40,15 +40,19 @@
       "type": "stat",
       "targets": [
         {
-          "expr": "count(container_last_seen{name=~\".+\"})",
-          "refId": "A"
+          "expr": "count(container_last_seen{name=~\"$container\"})",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ]
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -76,15 +80,19 @@
       "type": "stat",
       "targets": [
         {
-          "expr": "count(rate(container_cpu_usage_seconds_total{name=~\".+\"}[1m]) > 0)",
-          "refId": "A"
+          "expr": "count(container_last_seen{name=~\"$container\"})",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ]
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -112,15 +120,19 @@
       "type": "stat",
       "targets": [
         {
-          "expr": "sum(container_memory_working_set_bytes{name=~\".+\"})",
-          "refId": "A"
+          "expr": "sum(container_memory_working_set_bytes{name=~\"$container\"})",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ]
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -143,14 +155,18 @@
         {
           "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\"$container\"}[1m])) by (name) * 100",
           "legendFormat": "{{name}}",
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ]
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -173,14 +189,18 @@
         {
           "expr": "sum(container_memory_working_set_bytes{name=~\"$container\"}) by (name)",
           "legendFormat": "{{name}}",
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ]
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -203,14 +223,18 @@
         {
           "expr": "sum(rate(container_network_receive_bytes_total{name=~\"$container\"}[1m])) by (name)",
           "legendFormat": "{{name}}",
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ]
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -233,7 +257,11 @@
         {
           "expr": "sum(rate(container_network_transmit_bytes_total{name=~\"$container\"}[1m])) by (name)",
           "legendFormat": "{{name}}",
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ]
     }
@@ -249,21 +277,29 @@
       {
         "allValue": ".*",
         "current": {
-          "text": "All",
-          "value": "$__all"
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "Prometheus"
+          "uid": "prometheus"
         },
-        "definition": "label_values(container_cpu_usage_seconds_total{name=~\".+\"}, name)",
+        "definition": "label_values(container_last_seen{name=~\".+\"}, name)",
         "hide": 0,
         "includeAll": true,
-        "label": "Container",
+        "label": "Conteneur",
         "multi": true,
         "name": "container",
         "options": [],
-        "query": "label_values(container_cpu_usage_seconds_total{name=~\".+\"}, name)",
+        "query": {
+          "query": "label_values(container_last_seen{name=~\".+\"}, name)",
+          "refId": "StandardVariableQuery"
+        },
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,

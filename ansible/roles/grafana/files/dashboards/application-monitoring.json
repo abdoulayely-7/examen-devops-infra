@@ -12,7 +12,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -40,15 +40,19 @@
       "type": "stat",
       "targets": [
         {
-          "expr": "sum(rate(http_server_requests_seconds_count[1m])) or vector(0)",
-          "refId": "A"
+          "expr": "sum(rate(http_server_requests_seconds_count{instance=~\"$instance\", uri=~\"$uri\"}[1m])) or vector(0)",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ]
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -80,15 +84,19 @@
       "type": "stat",
       "targets": [
         {
-          "expr": "(sum(rate(http_server_requests_seconds_count{status=~\"5..\"}[1m])) / sum(rate(http_server_requests_seconds_count[1m]))) * 100 or vector(0)",
-          "refId": "A"
+          "expr": "(sum(rate(http_server_requests_seconds_count{instance=~\"$instance\", uri=~\"$uri\", status=~\"5..\"}[1m])) / sum(rate(http_server_requests_seconds_count{instance=~\"$instance\", uri=~\"$uri\"}[1m]))) * 100 or vector(0)",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ]
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -116,15 +124,19 @@
       "type": "stat",
       "targets": [
         {
-          "expr": "sum(rate(http_server_requests_seconds_sum[1m])) / sum(rate(http_server_requests_seconds_count[1m])) or vector(0)",
-          "refId": "A"
+          "expr": "sum(rate(http_server_requests_seconds_sum{instance=~\"$instance\", uri=~\"$uri\"}[1m])) / sum(rate(http_server_requests_seconds_count{instance=~\"$instance\", uri=~\"$uri\"}[1m])) or vector(0)",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ]
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -152,15 +164,19 @@
       "type": "stat",
       "targets": [
         {
-          "expr": "process_uptime_seconds or vector(0)",
-          "refId": "A"
+          "expr": "process_uptime_seconds{instance=~\"$instance\"} or vector(0)",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ]
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -181,16 +197,20 @@
       "type": "timeseries",
       "targets": [
         {
-          "expr": "sum by (uri, status) (rate(http_server_requests_seconds_count[1m]))",
+          "expr": "sum by (uri, status) (rate(http_server_requests_seconds_count{instance=~\"$instance\", uri=~\"$uri\"}[1m]))",
           "legendFormat": "{{uri}} ({{status}})",
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ]
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -211,26 +231,38 @@
       "type": "timeseries",
       "targets": [
         {
-          "expr": "jvm_memory_used_bytes{area=\"heap\"}",
+          "expr": "jvm_memory_used_bytes{instance=~\"$instance\", area=\"heap\"}",
           "legendFormat": "Heap Utilis\u00e9e",
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         },
         {
-          "expr": "jvm_memory_max_bytes{area=\"heap\"}",
+          "expr": "jvm_memory_max_bytes{instance=~\"$instance\", area=\"heap\"}",
           "legendFormat": "Heap Max",
-          "refId": "B"
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         },
         {
-          "expr": "jvm_memory_used_bytes{area=\"nonheap\"}",
+          "expr": "jvm_memory_used_bytes{instance=~\"$instance\", area=\"nonheap\"}",
           "legendFormat": "Non-Heap Utilis\u00e9e",
-          "refId": "C"
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ]
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -251,21 +283,29 @@
       "type": "timeseries",
       "targets": [
         {
-          "expr": "process_cpu_usage",
+          "expr": "process_cpu_usage{instance=~\"$instance\"}",
           "legendFormat": "JVM Process CPU",
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         },
         {
-          "expr": "system_cpu_usage",
+          "expr": "system_cpu_usage{instance=~\"$instance\"}",
           "legendFormat": "System CPU",
-          "refId": "B"
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ]
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -286,14 +326,22 @@
       "type": "timeseries",
       "targets": [
         {
-          "expr": "jvm_threads_live_threads",
+          "expr": "jvm_threads_live_threads{instance=~\"$instance\"}",
           "legendFormat": "Threads Actifs",
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         },
         {
-          "expr": "rate(jvm_gc_pause_seconds_count[1m])",
+          "expr": "rate(jvm_gc_pause_seconds_count{instance=~\"$instance\"}[1m])",
           "legendFormat": "Fr\u00e9quence GC (/s)",
-          "refId": "B"
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ]
     }
@@ -309,5 +357,73 @@
     "to": "now"
   },
   "title": "Application Monitoring",
-  "uid": "application-monitoring"
+  "uid": "application-monitoring",
+  "templating": {
+    "list": [
+      {
+        "allValue": ".*",
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "definition": "label_values(process_uptime_seconds{job=\"application\"}, instance)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Instance",
+        "multi": true,
+        "name": "instance",
+        "options": [],
+        "query": {
+          "query": "label_values(process_uptime_seconds{job=\"application\"}, instance)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": ".*",
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "definition": "label_values(http_server_requests_seconds_count, uri)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "URI",
+        "multi": true,
+        "name": "uri",
+        "options": [],
+        "query": {
+          "query": "label_values(http_server_requests_seconds_count, uri)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  }
 }

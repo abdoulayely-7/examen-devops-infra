@@ -24,7 +24,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -65,15 +65,19 @@
       "type": "stat",
       "targets": [
         {
-          "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[1m])) * 100)",
-          "refId": "A"
+          "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{instance=~\"$instance\", mode=\"idle\"}[1m])) * 100)",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ]
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -118,15 +122,19 @@
       "type": "stat",
       "targets": [
         {
-          "expr": "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100",
-          "refId": "A"
+          "expr": "(1 - (node_memory_MemAvailable_bytes{instance=~\"$instance\"} / node_memory_MemTotal_bytes{instance=~\"$instance\"})) * 100",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ]
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -171,15 +179,19 @@
       "type": "stat",
       "targets": [
         {
-          "expr": "100 - ((node_filesystem_avail_bytes{mountpoint=\"/\"} * 100) / node_filesystem_size_bytes{mountpoint=\"/\"})",
-          "refId": "A"
+          "expr": "100 - ((node_filesystem_avail_bytes{instance=~\"$instance\", mountpoint=\"/\"} * 100) / node_filesystem_size_bytes{instance=~\"$instance\", mountpoint=\"/\"})",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ]
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -216,15 +228,19 @@
       "type": "stat",
       "targets": [
         {
-          "expr": "node_time_seconds - node_boot_time_seconds",
-          "refId": "A"
+          "expr": "node_time_seconds{instance=~\"$instance\"} - node_boot_time_seconds{instance=~\"$instance\"}",
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ]
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -246,16 +262,20 @@
       "type": "timeseries",
       "targets": [
         {
-          "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[1m])) * 100)",
+          "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{instance=~\"$instance\", mode=\"idle\"}[1m])) * 100)",
           "legendFormat": "CPU Busy",
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ]
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -277,21 +297,29 @@
       "type": "timeseries",
       "targets": [
         {
-          "expr": "node_memory_MemTotal_bytes",
+          "expr": "node_memory_MemTotal_bytes{instance=~\"$instance\"}",
           "legendFormat": "RAM Totale",
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         },
         {
-          "expr": "node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes",
+          "expr": "node_memory_MemTotal_bytes{instance=~\"$instance\"} - node_memory_MemAvailable_bytes{instance=~\"$instance\"}",
           "legendFormat": "RAM Utilis\u00e9e",
-          "refId": "B"
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ]
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -312,26 +340,38 @@
       "type": "timeseries",
       "targets": [
         {
-          "expr": "node_load1",
+          "expr": "node_load1{instance=~\"$instance\"}",
           "legendFormat": "Load 1m",
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         },
         {
-          "expr": "node_load5",
+          "expr": "node_load5{instance=~\"$instance\"}",
           "legendFormat": "Load 5m",
-          "refId": "B"
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         },
         {
-          "expr": "node_load15",
+          "expr": "node_load15{instance=~\"$instance\"}",
           "legendFormat": "Load 15m",
-          "refId": "C"
+          "refId": "C",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ]
     },
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "Prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -352,14 +392,22 @@
       "type": "timeseries",
       "targets": [
         {
-          "expr": "rate(node_network_receive_bytes_total{device!~\"lo|veth.*|docker.*|br-.*\"}[1m])",
+          "expr": "rate(node_network_receive_bytes_total{instance=~\"$instance\", device!~\"lo|veth.*|docker.*|br-.*\"}[1m])",
           "legendFormat": "Re\u00e7u (RX) {{device}}",
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         },
         {
-          "expr": "rate(node_network_transmit_bytes_total{device!~\"lo|veth.*|docker.*|br-.*\"}[1m])",
+          "expr": "rate(node_network_transmit_bytes_total{instance=~\"$instance\", device!~\"lo|veth.*|docker.*|br-.*\"}[1m])",
           "legendFormat": "Transmis (TX) {{device}}",
-          "refId": "B"
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          }
         }
       ]
     }
@@ -375,5 +423,41 @@
     "to": "now"
   },
   "title": "EC2 Server Monitoring",
-  "uid": "ec2-server-monitoring"
+  "uid": "ec2-server-monitoring",
+  "templating": {
+    "list": [
+      {
+        "allValue": ".*",
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "definition": "label_values(node_uname_info, instance)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Instance",
+        "multi": true,
+        "name": "instance",
+        "options": [],
+        "query": {
+          "query": "label_values(node_uname_info, instance)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  }
 }
