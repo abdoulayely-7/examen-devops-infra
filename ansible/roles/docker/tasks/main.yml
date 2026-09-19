@@ -47,3 +47,21 @@
     driver: "{{ item.driver }}" # Le type de réseau (ex: overlay ou bridge)
     state: present
   loop: "{{ docker_networks }}" # Boucle pour créer tous les réseaux nécessaires pour isoler nos conteneurs
+
+- name: Ensure Docker configuration directory exists
+  ansible.builtin.file:
+    path: /etc/docker
+    state: directory
+    mode: '0755'
+
+- name: Configure Docker daemon features
+  ansible.builtin.copy:
+    dest: /etc/docker/daemon.json
+    content: |
+      {
+        "features": {
+          "containerd-snapshotter": false
+        }
+      }
+    mode: '0644'
+  notify: restart docker

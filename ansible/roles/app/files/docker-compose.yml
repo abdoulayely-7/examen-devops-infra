@@ -55,7 +55,7 @@ services:
       start_period: 30s
 
   front:
-    image: ${DOCKERHUB_USERNAME:-abdoulayely777}/examen-devops-front:${APP_TAG:-latest}
+    image: ${DOCKERHUB_USERNAME:-abdoulayely777}/examen-devops-front:latest
     container_name: examen-devops-front
     restart: unless-stopped
     labels:
